@@ -1,5 +1,9 @@
 language: objective-c
-before_script:
-    - brew update && brew upgrade xctool
+osx_image: xcode7.2
 script:
-    - xctool test -project VPNOn.xcodeproj -scheme VPNOn -sdk iphonesimulator
+  - |
+    xctool build -jobs 4 \
+    -project VPNOn.xcodeproj \
+    -scheme VPNOn \
+    -sdk iphonesimulator
+

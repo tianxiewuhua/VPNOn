@@ -8,77 +8,99 @@
 
 import UIKit
 
-let kTableViewCellAccessoryWidth: CGFloat = 16
-let kTableViewCellRightMargin: CGFloat = 36
+private let kAccessoryWidth: CGFloat = 16
+private let kRightMargin: CGFloat = 36
 
-class VPNTableViewCell: UITableViewCell
-{
+class VPNTableViewCell : NormalTableViewCell {
+    
     var IKEv2: Bool = false {
-        didSet {
-            self.setNeedsDisplay()
-        }
+        didSet { setNeedsDisplay() }
     }
     
     var current: Bool = false {
-        didSet {
-            self.setNeedsDisplay()
-        }
+        didSet { setNeedsDisplay() }
     }
     
     override func drawRect(rect: CGRect) {
         if IKEv2 {
             let tagWidth: CGFloat = 34
             let tagHeight: CGFloat = 14
-            let tagX = CGRectGetWidth(bounds) - tagWidth - kTableViewCellAccessoryWidth - kTableViewCellRightMargin
+            let tagX = CGRectGetWidth(bounds)
+                - tagWidth
+                - kAccessoryWidth
+                - kRightMargin
             let tagY = (CGRectGetHeight(bounds) - tagHeight) / 2
             let tagRect = CGRectMake(tagX, tagY, tagWidth, tagHeight)
-            drawIKEv2Tag(radius: 2, rect: tagRect, tagText: "IKEv2", color: tintColor)
+            drawIKEv2Tag(
+                radius: 2,
+                rect: tagRect,
+                tagText: "IKEv2",
+                color: tintColor
+            )
         }
         if current {
-            let context = UIGraphicsGetCurrentContext()
-            let currentIndicatorRect = CGRect(x: 0, y: 0, width: 7, height: rect.size.height)
+            let currentIndicatorRect = CGRectMake(
+                0, 0,
+                7, CGRectGetHeight(rect)
+            )
             let rectanglePath = UIBezierPath(rect: currentIndicatorRect)
             LTThemeManager.sharedManager.currentTheme!.tintColor.setFill()
             rectanglePath.fill()
         }
     }
     
-    func drawIKEv2Tag(#radius: CGFloat, rect: CGRect, tagText: String, color: UIColor) {
-        //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
-        
-        //// Variable Declarations
-        let height: CGFloat = rect.size.height / 1.20
-        
-        //// Rectangle Drawing
-        let rectanglePath = UIBezierPath(roundedRect: rect, cornerRadius: radius)
-        color.setStroke()
-        rectanglePath.lineWidth = 1
-        rectanglePath.stroke()
-        
-        
-        //// Text Drawing
-        let textRect = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height)
-        let textStyle = NSMutableParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
-        textStyle.alignment = NSTextAlignment.Center
-        
-        let textFontAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(height - 1), NSForegroundColorAttributeName: color, NSParagraphStyleAttributeName: textStyle]
-        
-        let textTextHeight: CGFloat = NSString(string: tagText).boundingRectWithSize(CGSizeMake(textRect.width, CGFloat.infinity), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: textFontAttributes, context: nil).size.height
-        CGContextSaveGState(context)
-        CGContextClipToRect(context, textRect);
-        NSString(string: tagText).drawInRect(CGRectMake(textRect.minX, textRect.minY + (textRect.height - textTextHeight) / 2, textRect.width, textTextHeight), withAttributes: textFontAttributes)
-        CGContextRestoreGState(context)
+    func drawIKEv2Tag(
+        radius radius: CGFloat,
+        rect: CGRect,
+        tagText: String,
+        color: UIColor
+        ) {
+            //// General Declarations
+            let context = UIGraphicsGetCurrentContext()
+            
+            //// Variable Declarations
+            let height: CGFloat = rect.size.height / 1.20
+            
+            //// Rectangle Drawing
+            let rectanglePath = UIBezierPath(
+                roundedRect: rect,
+                cornerRadius: radius
+            )
+            color.setStroke()
+            rectanglePath.lineWidth = 1
+            rectanglePath.stroke()
+            
+            //// Text Drawing
+            let textRect = rect
+            let textStyle = NSMutableParagraphStyle.defaultParagraphStyle()
+                .mutableCopy() as! NSMutableParagraphStyle
+            textStyle.alignment = NSTextAlignment.Center
+            
+            let textFontAttributes = [
+                NSFontAttributeName: UIFont.systemFontOfSize(height - 1),
+                NSForegroundColorAttributeName: color,
+                NSParagraphStyleAttributeName: textStyle
+            ]
+            
+            let textTextHeight: CGFloat = NSString(string: tagText)
+                .boundingRectWithSize(
+                    CGSizeMake(textRect.width, CGFloat.infinity),
+                    options: NSStringDrawingOptions.UsesLineFragmentOrigin,
+                    attributes: textFontAttributes,
+                    context: nil
+                ).size.height
+            CGContextSaveGState(context)
+            CGContextClipToRect(context, textRect);
+            NSString(string: tagText).drawInRect(
+                CGRectMake(
+                    textRect.minX,
+                    textRect.minY + (textRect.height - textTextHeight) / 2,
+                    textRect.width,
+                    textTextHeight
+                ),
+                withAttributes: textFontAttributes
+            )
+            CGContextRestoreGState(context)
     }
-
-    override func willMoveToSuperview(newSuperview: UIView?) {
-        if newSuperview != nil {
-            if accessoryType == .DisclosureIndicator {
-                if accessoryView == nil {
-                    accessoryView = LTTableViewCellDeclosureIndicator()
-                    accessoryView!.frame = CGRectMake(0, 0, kTableViewCellAccessoryWidth, kTableViewCellAccessoryWidth)
-                }
-            }
-        }
-    }
+    
 }

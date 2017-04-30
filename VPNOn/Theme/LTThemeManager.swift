@@ -62,7 +62,7 @@ class LTThemeManager
         UINavigationBar.appearance().barTintColor = theme.navigationBarColor
         UINavigationBar.appearance().tintColor = theme.tintColor
         UINavigationBar.appearance().backgroundColor = UIColor.clearColor()
-        UINavigationBar.appearance().titleTextAttributes = NSDictionary(objects: [theme.textColor], forKeys: [NSForegroundColorAttributeName]) as [NSObject : AnyObject]
+        UINavigationBar.appearance().titleTextAttributes = NSDictionary(objects: [theme.textColor], forKeys: [NSForegroundColorAttributeName]) as? [String : AnyObject]
         
         // TableView
         UITableView.appearance().backgroundColor = theme.tableViewBackgroundColor
@@ -74,6 +74,8 @@ class LTThemeManager
         LTTableViewCellTitle.appearance().textColor = theme.textColor
         UILabel.lt_appearanceWhenContainedIn(LTTableViewActionCell.self).textColor = theme.tintColor
         UILabel.lt_appearanceWhenContainedIn(VPNTableViewCell.self).textColor = theme.textColor
+        UILabel.lt_appearanceWhenContainedIn(NormalTableViewCell.self).textColor = theme.textColor
+        UILabel.lt_appearanceWhenContainedIn(AcknowledgementCell.self).textColor = theme.textColor
         UITextView.lt_appearanceWhenContainedIn(UITableViewCell.self).backgroundColor = theme.tableViewCellColor
         UITextView.lt_appearanceWhenContainedIn(UITableViewCell.self).textColor = theme.textColor
         
@@ -101,7 +103,7 @@ class LTThemeManager
         for window in windows {
             for view in window.subviews {
                 view.removeFromSuperview()
-                window.addSubview(view as! UIView)
+                window.addSubview(view )
             }
         }
     }
